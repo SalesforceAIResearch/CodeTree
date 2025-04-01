@@ -71,12 +71,12 @@ def eval_node(prompt, node:Node, gen, model, max_depth=3):
     """
     if node.parent is None: parent_value=0
     else: parent_value =  node.parent.value
-    if node.depth >= max_depth: return False, node.value
+    if node.depth >= max_depth: return False, node.value, ""
     agent_reward, analysis = gen.agent_eval(prompt, model, prev_func_impl=node.solution, task="tests",
                                   feedback=node.test_feedback.split("[additional review]:")[0].strip())
     node.value += float(agent_reward) / 15
-    if node.value < parent_value: return False, node.value
-    elif node.value == parent_value and node.depth > agent_reward: return False, node.value
+    if node.value < parent_value: return False, node.value, ""
+    elif node.value == parent_value and node.depth > agent_reward: return False, node.value, ""
     return True, node.value, analysis
 
 def step_verify(gen, exe, item, solution, model):
